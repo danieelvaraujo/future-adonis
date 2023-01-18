@@ -4,9 +4,9 @@ Simples API Rest para CRUD de restaurantes e seus respectivos horários de funci
 
 ## OBJETIVOS
 
-- CRUD básico como nome, documento, tipo (lanchonete, sorveteria, ...) e etc
+- CRUD básico como nome, documento, tipo (lanchonete, sorveteria, ...) e etc ✅
 - Enviar a URL do swagger do sistema publicado em algum servidor e o link para o repositório.
-- Utilizar NodeJS e Express.
+- Utilizar NodeJS e Express -> Utilizado Adonis. ✅
 - Pode ser usado qualquer banco de dados relacional moderno (Oracle, SQLServer, MySQL, Postgree...)
 
 ## REQUISITOS
