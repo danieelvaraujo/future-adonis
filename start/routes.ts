@@ -25,10 +25,12 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-Route.get('/lojas', async () => {
-  return new LojasController().index()
-})
+Route.group(() => {
+  Route.get('/', async () => {
+    return new LojasController().index()
+  })
+    Route.post('/', async (ctx) => {
+    return new LojasController().store(ctx)
+  })
+}).prefix('/lojas')
 
-Route.post('/lojas', async (ctx) => {
-  return new LojasController().store(ctx)
-})
