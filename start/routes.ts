@@ -19,11 +19,10 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route'
-import LojasController from 'App/Controllers/Http/LojasController'
 
 Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-Route.resource('lojas', 'LojasController').apiOnly()
+Route.resource('stores', 'StoresController').apiOnly()
 

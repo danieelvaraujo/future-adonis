@@ -1,47 +1,48 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 
-import Loja from 'App/Models/Loja';
-export default class LojasController {
-    public async index({ response }) {
-        const lojas = await Loja.all()
+import Store from 'App/Models/Store';
 
-        return response.ok(lojas)
+export default class StoresController {
+    public async index({ response }) {
+        const stores = await Store.all()
+
+        return response.ok(stores)
     }
 
     public async show({ params, response }) {
         const { id }: { id: Number } = params
 
-        const loja: any = await Loja.find(id)
-        if (!loja) {
+        const store: any = await Store.find(id)
+        if (!store) {
             return response.notFound({ message: 'Loja não encontrada.' })
         }
 
-        return response.ok(loja)
+        return response.ok(store)
     }
 
     public async store({ request, response }) {
         const storeSchema = schema.create({
-            titulo: schema.string({ trim: true }, [
+            title: schema.string({ trim: true }, [
                 rules.required(),
                 rules.maxLength(100)
             ]),
-            documento: schema.string({ escape: true }, [
+            document: schema.string({ escape: true }, [
                 rules.maxLength(14)
             ]),
-            tipo: schema.string({ escape: true }, [
+            type: schema.string({ escape: true }, [
                 rules.required(),
             ]),
-            horario_abertura: schema.string({ escape: true }, [
+            opening_hour: schema.string({ escape: true }, [
                 rules.required(),
             ]),
-            horario_fechamento: schema.string({ escape: true }, [
+            closing_hour: schema.string({ escape: true }, [
                 rules.required(),
             ]),
         })
 
         const payload: any = await request.validate({ schema: storeSchema })
-        const loja: Loja = await Loja.create(payload)
+        const store: Store = await Store.create(payload)
 
-        return response.ok(loja)
+        return response.ok(store)
     }
 }
