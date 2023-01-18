@@ -76,4 +76,18 @@ export default class StoresController {
 
         return response.ok(store)
     }
+
+    public async destroy({ params, response }) {
+        const { id }: { id: Number } = params
+
+        const store: any = await Store.find(id)
+        if (!store) {
+            return response.notFound({ message: 'Loja não encontrada' })
+        }
+
+        await store.delete()
+
+        return response.ok({ message: 'Loja removida com sucesso.' })
+    }
+
 }
