@@ -1,13 +1,19 @@
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import BusinessTime from 'App/Models/BusinessTime';
 import BusinessType from 'App/Models/BusinessType';
-
 import Store from 'App/Models/Store';
 import StoresRepository from 'App/Repositories/StoresRepository';
+import CreateStoreValidator from 'App/Validators/CreateStoreValidator';
+import UpdateStoreValidator from 'App/Validators/UpdateStoreValidator';
+
+import { getBusinessTimePayload } from './Helpers/getBusinessTimePayload';
 
 export default class StoresController {
     public async index({ response }) {
         const stores = await StoresRepository.getAllStores()
+
+        if (!stores) {
+            return response.notFound({ message: 'Ainda não há lojas cadastradas.' })
+        }
 
         return response.ok(stores)
     }
@@ -30,56 +36,39 @@ export default class StoresController {
             .first();
         
         if (!availableBusinessTypes) {
-            return response.json({ error: 'O tipo do restaurante não é aceitável.' })
+            return response.json({ error: 'O tipo da loja não está dentro dos permitidos.' })
         }
 
-        const storeSchema = schema.create({
-            title: schema.string({ trim: true }, [
-                rules.required(),
-                rules.maxLength(100)
-            ]),
-            document: schema.string({ escape: true }, [
-                rules.maxLength(14)
-            ])
-        })
-
-        const payload: any = await request.validate({ schema: storeSchema })
-        const store: Store = await StoresRepository.createStore(payload, availableBusinessTypes)
+        try {
+            const payload: any = await request.validate(CreateStoreValidator)
+            const store: Store = await StoresRepository.createStore(payload, availableBusinessTypes)
         
-        const businessTimesArray = request.requestBody.businessTimes.map(
-            (businessTime: BusinessTime): BusinessTime => {
-                businessTime.storeId = store.id
-
-                return businessTime
-        })
-        
-        await BusinessTime.createMany(businessTimesArray)
-
-        return response.ok(store)
+            const businessTimePayload = getBusinessTimePayload(request.requestBody, store.id)            
+            await BusinessTime.createMany(businessTimePayload)
+            
+            return response.ok(store)
+        } catch (error) {
+            response.badRequest(error.messages)
+        }
     }
 
     public async update({ request, params, response }) {
-        const storeSchema = schema.create({
-            title: schema.string.optional(),
-            document: schema.string.optional({ escape: true }, [
-                rules.maxLength(14),
-            ]),
-            type: schema.string.optional(),
-        })
+        try {
+            const payload: any = await request.validate(UpdateStoreValidator)
+            const { id }: { id: Number } = params
 
-        const payload: any = await request.validate({ schema: storeSchema })
-        const { id }: { id: Number } = params
+            const store: any = await StoresRepository.findById(id)
+            if (!store) {
+                return response.notFound({ message: 'A loja não foi encontrada.' })
+            }
 
-        const store: any = await StoresRepository.findById(id)
-        if (!store) {
-            return response.notFound({ message: 'A loja não foi encontrada.' })
+            store.merge(payload);
+            await store.save()
+
+            return response.ok(store)
+        } catch (error) {
+            response.badRequest(error.messages)
         }
-
-        store.merge(payload);
-
-        await store.save()
-
-        return response.ok(store)
     }
 
     public async destroy({ params, response }) {
