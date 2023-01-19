@@ -23,6 +23,19 @@ export default class StoresRepository {
         return created;
     }
 
+    public static async updateStore(id, payload) {
+        const store: any = await Store.findOrFail(id)
+        const businessType = await BusinessType.findByOrFail('type', payload.businessType)
+
+        store.title = payload.title ?? store.title
+        store.document = payload.document ?? store.document 
+        store.businessTypeId = businessType.id ?? store.businessTypeId
+        
+        await store.save()
+
+        return store
+    }
+
     public static async destroy(id: Number) {
         const store: any = await Store.find(id)
         if (!store) {

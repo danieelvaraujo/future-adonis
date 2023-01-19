@@ -51,17 +51,11 @@ export default class StoresController {
             const payload: any = await request.validate(UpdateStoreValidator)
             const { id }: { id: Number } = params
 
-            const store: any = await StoresRepository.findById(id)
-            if (!store) {
-                return response.notFound({ message: 'A loja não foi encontrada.' })
-            }
-
-            store.merge(payload);
-            await store.save()
-
+            const store: any = await StoresRepository.updateStore(id, payload)
+            
             return response.ok(store)
         } catch (error) {
-            response.badRequest(error.messages)
+            response.badRequest(error)
         }
     }
 
