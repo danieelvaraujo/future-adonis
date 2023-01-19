@@ -1,5 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, HasMany, hasMany, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm'
+import BusinessTime from './BusinessTime'
+import BusinessType from './BusinessType'
 
 export default class Store extends BaseModel {
   @column({ isPrimary: true })
@@ -12,17 +14,22 @@ export default class Store extends BaseModel {
   public document: string
 
   @column()
-  public type: string
-
-  @column()
-  public opening_hour: string
-
-  @column()
-  public closing_hour: string
+  public businessTypeId: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @hasOne(() => BusinessType, {
+    localKey: 'businessTypeId'
+  })
+  public businessType: HasOne<typeof BusinessType>
+
+  @hasMany(() => BusinessTime, {
+    localKey: 'storeId'
+  })
+  public businessTimes: HasMany<typeof BusinessTime>
 }
+ 
