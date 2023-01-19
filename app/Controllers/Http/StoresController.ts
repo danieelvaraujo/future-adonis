@@ -96,6 +96,5 @@ export default class StoresController {
         await store.delete()
 
         return response.ok({ message: 'A loja foi removida com sucesso.' })
-    }StoresController
-    
+    }    
 }
