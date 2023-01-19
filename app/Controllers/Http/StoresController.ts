@@ -1,11 +1,8 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import BusinessTime from 'App/Models/BusinessTime';
 import BusinessType from 'App/Models/BusinessType';
-import Days from 'Contracts/Enums/Days'
 
 import Store from 'App/Models/Store';
-import FilterPossibilitiesService from 'App/Services/FilterPossibilitiesService';
-import { getDataGMT } from './Helpers/getDataGMT';
 import StoresRepository from 'App/Repositories/StoresRepository';
 
 export default class StoresController {
@@ -99,6 +96,6 @@ export default class StoresController {
         await store.delete()
 
         return response.ok({ message: 'A loja foi removida com sucesso.' })
-    }
+    }StoresController
     
 }
