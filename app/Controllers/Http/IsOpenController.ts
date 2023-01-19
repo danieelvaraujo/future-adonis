@@ -1,4 +1,4 @@
-import BusinessTime from "App/Models/BusinessTime";
+import BusinessTimesRepository from "App/Repositories/BusinessTimesRepository";
 import StoresRepository from "App/Repositories/StoresRepository";
 import FilterPossibilitiesService from "App/Services/FilterPossibilitiesService";
 import Days from "Contracts/Enums/Days";
@@ -17,7 +17,7 @@ export default class IsOpenController {
         
         const weekDay = Object.values(Days).slice(0, 7)[dateGMT.getUTCDay()]         
 
-        const possibilities = await BusinessTime.query().where({day: weekDay, store_id: storeToCheck.id})
+        const possibilities = await BusinessTimesRepository.possibilities(weekDay, storeToCheck.id)
         const filterResults = FilterPossibilitiesService.applyFilter(possibilities, dateGMT)
 
         return response.ok({
