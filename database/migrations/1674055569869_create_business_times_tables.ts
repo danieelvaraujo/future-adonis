@@ -8,8 +8,8 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
       table.enu('day', Object.values(Days).slice(0, 7)).notNullable()
-      table.string('opening_hour').notNullable()
-      table.string('closing_hour').notNullable()
+      table.time('opening_hour').notNullable()
+      table.time('closing_hour').notNullable()
 
       table.integer('store_id')
         .unsigned()
