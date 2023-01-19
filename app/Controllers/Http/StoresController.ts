@@ -22,7 +22,7 @@ export default class StoresController {
     public async show({ params, response }) {
         const { id }: { id: Number } = params
 
-        const store = await StoresRepository.findById(id)
+        const store: Store | null = await StoresRepository.findById(id)
         if (!store) {
             return response.notFound({ message: 'A loja não foi encontrada.' })
         }
