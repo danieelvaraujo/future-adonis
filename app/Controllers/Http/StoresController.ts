@@ -5,6 +5,7 @@ import Days from 'Contracts/Enums/Days'
 
 import Store from 'App/Models/Store';
 import FilterPossibilitiesService from 'App/Services/FilterPossibilitiesService';
+import { getDataGMT } from './Helpers/getDataGMT';
 
 export default class StoresController {
     public async index({ response }) {
@@ -109,11 +110,10 @@ export default class StoresController {
         if (!storeToCheck) {
             return response.notFound({ message: "A não foi encontrada"});
         }
-        const dateToCheck = request.requestData.data
         
-        const dateGMT = new Date(dateToCheck)
-        const requestHours = dateGMT.getHours()
-        dateGMT.setHours(requestHours - 3)
+        const dateToCheck = request.requestData.data
+        const dateGMT = getDataGMT(dateToCheck)
+        
         const weekDay = Object.values(Days).slice(0, 7)[dateGMT.getUTCDay()]         
 
         const possibilities = await BusinessTime.query().where({day: weekDay, store_id: storeToCheck.id})
