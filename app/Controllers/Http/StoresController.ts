@@ -47,11 +47,7 @@ export default class StoresController {
         })
 
         const payload: any = await request.validate({ schema: storeSchema })
-        const store: Store = await Store.create({
-            title: payload.title,
-            document: payload.document,
-            businessTypeId: availableBusinessTypes.id
-        })
+        const store: Store = await StoresRepository.createStore(payload, availableBusinessTypes)
         
         const businessTimesArray = request.requestBody.businessTimes.map(
             (businessTime: BusinessTime): BusinessTime => {
