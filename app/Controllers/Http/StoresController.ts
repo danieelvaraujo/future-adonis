@@ -18,7 +18,7 @@ export default class StoresController {
     public async show({ params, response }) {
         const { id }: { id: Number } = params
 
-        const store = await StoresRepository.findOneStore(id)
+        const store = await StoresRepository.findById(id)
         if (!store) {
             return response.notFound({ message: 'A loja não foi encontrada.' })
         }
@@ -74,7 +74,7 @@ export default class StoresController {
         const payload: any = await request.validate({ schema: storeSchema })
         const { id }: { id: Number } = params
 
-        const store: any = await Store.find(id)
+        const store: any = await StoresRepository.findById(id)
         if (!store) {
             return response.notFound({ message: 'A loja não foi encontrada.' })
         }
@@ -91,7 +91,7 @@ export default class StoresController {
     public async destroy({ params, response }) {
         const { id }: { id: Number } = params
 
-        const store: any = await Store.find(id)
+        const store: any = await StoresRepository.findById(id)
         if (!store) {
             return response.notFound({ message: 'A loja não foi encontrada' })
         }
@@ -100,24 +100,5 @@ export default class StoresController {
 
         return response.ok({ message: 'A loja foi removida com sucesso.' })
     }
-
-    public async isOpen ({ request, response }): Promise<any> {        
-        const storeToCheck = await Store.find(request.requestData.store)
-
-        if (!storeToCheck) {
-            return response.notFound({ message: "A não foi encontrada"});
-        }
-
-        const dateToCheck = request.requestData.data
-        const dateGMT = getDataGMT(dateToCheck)
-        
-        const weekDay = Object.values(Days).slice(0, 7)[dateGMT.getUTCDay()]         
-
-        const possibilities = await BusinessTime.query().where({day: weekDay, store_id: storeToCheck.id})
-        const filterResults = FilterPossibilitiesService.applyFilter(possibilities, dateGMT)
-
-        return response.ok({
-            isOpen: filterResults.length > 0            
-        })               
-    }
+    
 }

@@ -5,7 +5,7 @@ export default class StoresRepository {
         return await Store.all()        
     }
 
-    public static async findOneStore(id) {
+    public static async findById(id) {
         return await Store.find(id)
     }
 
