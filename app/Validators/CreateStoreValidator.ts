@@ -25,10 +25,12 @@ export default class CreateStoreValidator {
    */
   public schema = schema.create({
     title: schema.string({ trim: true }, [
-      rules.maxLength(50)
+      rules.maxLength(50),
+      rules.unique({ table: 'stores', column: 'title'})
     ]),
     document: schema.string({ escape: true }, [
-        rules.maxLength(14)
+        rules.maxLength(14),
+        rules.unique({ table: 'stores', column: 'document'})
     ])
   })
 
@@ -44,9 +46,11 @@ export default class CreateStoreValidator {
    *
    */
   public messages: CustomMessages = {
-    'store.title.required': 'O nome da loja é obrigatório.',
-    'store.title.maxLength': 'O nome da loja não pode ter mais do que 50 caracteres.',
-    'store.document.required': 'O nome da loja é obrigatório.',
-    'store.document.maxLength': 'O documento deve ter no máximo 14 caracteres.',
+    'title.required': 'O nome da loja é obrigatório.',
+    'title.maxLength': 'O nome da loja não pode ter mais do que 50 caracteres.',
+    'title.unique': 'O nome desta loja já foi cadastrado.',
+    'document.required': 'O nome da loja é obrigatório.',
+    'document.maxLength': 'O documento deve ter no máximo 14 caracteres.',
+    'document.unique': 'Este documento já foi anteriormente cadastrado.',
   }
 }
