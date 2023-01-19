@@ -12,7 +12,7 @@ export default class StoresController {
     public async index({ response }) {
         const stores = await StoresRepository.getAllStores()
 
-        if (!stores) {
+        if (!stores.length) {
             return response.notFound({ message: 'Ainda não há lojas cadastradas.' })
         }
 
