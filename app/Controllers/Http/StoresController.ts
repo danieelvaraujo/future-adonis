@@ -1,7 +1,6 @@
 import BusinessTime from 'App/Models/BusinessTime';
 import Store from 'App/Models/Store';
 import BusinessTimesRepository from 'App/Repositories/BusinessTimesRepository';
-import BusinessTypesRepository from 'App/Repositories/BusinessTypesRepository';
 import StoresRepository from 'App/Repositories/StoresRepository';
 import CreateStoreValidator from 'App/Validators/CreateStoreValidator';
 import UpdateStoreValidator from 'App/Validators/UpdateStoreValidator';
@@ -31,16 +30,9 @@ export default class StoresController {
     }
 
     public async store({ request, response }) {
-        const availableBusinessTypes = BusinessTypesRepository
-            .availableBusinessTypes(request.requestBody.businessType)
-        
-        if (!availableBusinessTypes) {
-            return response.json({ error: 'O tipo da loja não está dentro dos permitidos.' })
-        }
-
         try {
             const payload: any = await request.validate(CreateStoreValidator)
-            const store: Store = await StoresRepository.createStore(payload, availableBusinessTypes)
+            const store: Store = await StoresRepository.createStore(payload)
         
             const businessTimePayload: BusinessTime[] = getBusinessTimePayload(
                 request.requestBody, 
@@ -49,8 +41,8 @@ export default class StoresController {
             await BusinessTimesRepository.createMany(businessTimePayload)
             
             return response.ok(store)
-        } catch (error) {
-            response.badRequest(error.messages)
+        } catch (error) {            
+            response.badRequest(error)
         }
     }
 

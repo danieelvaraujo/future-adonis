@@ -1,3 +1,4 @@
+import BusinessType from "App/Models/BusinessType";
 import Store from "App/Models/Store";
 
 export default class StoresRepository {
@@ -9,11 +10,14 @@ export default class StoresRepository {
         return await Store.find(id)
     }
 
-    public static async createStore(payload, availableBusinessTypes) {
+    public static async createStore(payload) {
+        const businessType = await BusinessType
+            .findByOrFail('type', payload.businessType)
+
         const created = await Store.create({
             title: payload.title,
             document: payload.document,
-            businessTypeId: availableBusinessTypes.id
+            businessTypeId: businessType.id
         })
 
         return created;
