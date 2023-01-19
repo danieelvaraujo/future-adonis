@@ -31,7 +31,10 @@ export default class CreateStoreValidator {
     document: schema.string({ escape: true }, [
         rules.maxLength(14),
         rules.unique({ table: 'stores', column: 'document'})
-    ])
+    ]),
+    businessType: schema.string({}, [
+      rules.exists({ table: 'business_types', column: 'type'})
+    ]),
   })
 
   /**
@@ -52,5 +55,6 @@ export default class CreateStoreValidator {
     'document.required': 'O nome da loja é obrigatório.',
     'document.maxLength': 'O documento deve ter no máximo 14 caracteres.',
     'document.unique': 'Este documento já foi anteriormente cadastrado.',
+    'businessType.exists': 'O tipo da loja não está dentro dos permitidos.',
   }
 }

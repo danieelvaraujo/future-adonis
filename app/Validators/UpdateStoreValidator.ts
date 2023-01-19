@@ -32,7 +32,7 @@ export default class UpdateStoreValidator {
       rules.maxLength(14),
       rules.unique({ table: 'stores', column: 'document'})
     ]),
-    type: schema.string.optional({}, [
+    businessType: schema.string.optional({}, [
       rules.exists({ table: 'business_types', column: 'type'})
     ]),
   })
@@ -54,5 +54,6 @@ export default class UpdateStoreValidator {
     'document.maxLength': 'O documento deve ter no máximo 14 caracteres.',
     'document.unique': 'Este documento já foi anteriormente cadastrado.',
     'type.exists': 'O tipo da loja não está dentro dos permitidos.',
+    'businessType.exists': 'O tipo da loja não está dentro dos permitidos.',
   }
 }
