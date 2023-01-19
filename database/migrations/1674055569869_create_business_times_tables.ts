@@ -1,4 +1,5 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
+import Days from 'Contracts/Enums/Days'
 
 export default class extends BaseSchema {
   protected tableName = 'business_times'
@@ -6,9 +7,9 @@ export default class extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id').primary()
-      table.string('day').unique().notNullable()
-      table.string('opening_hour').nullable()
-      table.string('closing_hour').nullable()
+      table.enu('day', Object.values(Days).slice(0, 7)).notNullable()
+      table.string('opening_hour').notNullable()
+      table.string('closing_hour').notNullable()
 
       table.integer('store_id')
         .unsigned()

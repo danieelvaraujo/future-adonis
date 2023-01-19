@@ -8,7 +8,11 @@ export default class extends BaseSchema {
       table.increments('id').primary()
       table.string('title', 50).unique().notNullable()
       table.string('document').unique().notNullable()
-      table.string('type').notNullable()
+      table.integer('business_type_id')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('business_types')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
