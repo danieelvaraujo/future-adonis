@@ -10,7 +10,7 @@ import { getBusinessTimePayload } from './Helpers/getBusinessTimePayload';
 
 export default class StoresController {
     public async index({ response }) {
-        const stores = await StoresRepository.getAllStores()
+        const stores: Store[] | null = await StoresRepository.getAllStores()
 
         if (!stores.length) {
             return response.notFound({ message: 'Ainda não há lojas cadastradas.' })
