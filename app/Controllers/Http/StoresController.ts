@@ -1,6 +1,7 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import BusinessTime from 'App/Models/BusinessTime';
 import BusinessType from 'App/Models/BusinessType';
+import Days from 'Contracts/Enums/Days'
 
 import Store from 'App/Models/Store';
 
@@ -16,7 +17,7 @@ export default class StoresController {
 
         const store: any = await Store.find(id)
         if (!store) {
-            return response.notFound({ message: 'Loja não encontrada.' })
+            return response.notFound({ message: 'A loja não foi encontrada.' })
         }
 
         return response.ok(store)
@@ -76,7 +77,7 @@ export default class StoresController {
 
         const store: any = await Store.find(id)
         if (!store) {
-            return response.notFound({ message: 'Loja não encontrada.' })
+            return response.notFound({ message: 'A loja não foi encontrada.' })
         }
 
         store.title = dataToUpdate.title ?? payload.title
@@ -93,12 +94,48 @@ export default class StoresController {
 
         const store: any = await Store.find(id)
         if (!store) {
-            return response.notFound({ message: 'Loja não encontrada' })
+            return response.notFound({ message: 'A loja não foi encontrada' })
         }
 
         await store.delete()
 
-        return response.ok({ message: 'Loja removida com sucesso.' })
+        return response.ok({ message: 'A loja foi removida com sucesso.' })
     }
 
+    public async isOpen ({ request, response }): Promise<any> {        
+        const storeToCheck = await Store.find(request.requestData.store)
+
+        if (!storeToCheck) {
+            return response.notFound({ message: "A não foi encontrada"});
+        }
+        const dateToCheck = request.requestData.data
+        
+        const dateGMT = new Date(dateToCheck)
+        const requestHours = dateGMT.getHours()
+        dateGMT.setHours(requestHours - 3)
+        const weekDay = Object.values(Days).slice(0, 7)[dateGMT.getUTCDay()]         
+
+        const possibilities = await BusinessTime.query().where({day: weekDay, store_id: storeToCheck.id})
+
+        const filterResults = possibilities.filter((possibility) => {
+            const [openingHours, openingMinutes, openingSeconds] = possibility.openingHour.split(':')
+            const [closingHours, closingMinutes, closingSeconds] = possibility.closingHour.split(':')            
+
+            const possibilityLowerDateLimit = new Date(dateGMT)
+            possibilityLowerDateLimit.setHours(Number(openingHours))
+            possibilityLowerDateLimit.setMinutes(Number(openingMinutes))
+            possibilityLowerDateLimit.setSeconds(Number(openingSeconds))
+
+            const possibilityUpperDateLimit = new Date(dateGMT)            
+            possibilityUpperDateLimit.setHours(Number(closingHours))
+            possibilityUpperDateLimit.setMinutes(Number(closingMinutes))
+            possibilityUpperDateLimit.setSeconds(Number(closingSeconds))
+
+            return possibilityLowerDateLimit <= dateGMT && possibilityUpperDateLimit >= dateGMT
+        })
+
+        return response.ok({
+            isOpen: filterResults.length > 0            
+        })               
+    }
 }

@@ -24,5 +24,5 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
+Route.get('/stores/is_open', 'StoresController.isOpen')
 Route.resource('stores', 'StoresController').apiOnly()
-
