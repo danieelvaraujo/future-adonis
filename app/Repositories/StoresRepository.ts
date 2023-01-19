@@ -5,7 +5,7 @@ export default class StoresRepository {
         return await Store.all()        
     }
 
-    public static async findById(id) {
+    public static async findById(id: Number) {
         return await Store.find(id)
     }
 
@@ -17,5 +17,19 @@ export default class StoresRepository {
         })
 
         return created;
+    }
+
+    public static async destroy(id: Number) {
+        const store: any = await Store.find(id)
+        if (!store) {
+            return 'A loja não foi encontrada.'
+        }
+
+        try {
+            await store.delete()
+            return 'A loja foi removida com sucesso.'
+        } catch (error) {
+            return 'Houve um problema ao tentar remover a loja.'
+        }
     }
 }
