@@ -1,3 +1,4 @@
+import { messages } from "App/Controllers/Http/Helpers/Messages";
 import BusinessType from "App/Models/BusinessType";
 import Store from "App/Models/Store";
 
@@ -39,14 +40,14 @@ export default class StoresRepository {
     public static async destroy(id: Number) {
         const store: Store | null = await Store.find(id)
         if (!store) {
-            return 'A loja não foi encontrada.'
+            return messages.store.NOT_FOUND
         }
 
         try {
             await store.delete()
-            return 'A loja foi removida com sucesso.'
+            return messages.store.REMOVED
         } catch (error) {
-            return 'Houve um problema ao tentar remover a loja.'
+            return messages.store.ERROR
         }
     }
 }

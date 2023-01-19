@@ -4,13 +4,14 @@ import StoresRepository from "App/Repositories/StoresRepository";
 import FilterPossibilitiesService from "App/Services/FilterPossibilitiesService";
 import Days from "Contracts/Enums/Days";
 import { getDataGMT } from "./Helpers/getDataGMT";
+import { messages } from "./Helpers/Messages";
 
 export default class IsOpenController {
     public async isOpen ({ request, response }): Promise<any> {        
         const storeToCheck = await StoresRepository.findById(request.requestData.store)
 
         if (!storeToCheck) {
-            return response.notFound({ message: "A loja não foi encontrada"});
+            return response.notFound({ message: messages.store.NOT_FOUND });
         }
 
         const dateToCheck = request.requestData.data

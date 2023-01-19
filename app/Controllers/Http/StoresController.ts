@@ -6,13 +6,14 @@ import CreateStoreValidator from 'App/Validators/CreateStoreValidator';
 import UpdateStoreValidator from 'App/Validators/UpdateStoreValidator';
 
 import { getBusinessTimePayload } from './Helpers/getBusinessTimePayload';
+import { messages } from './Helpers/Messages';
 
 export default class StoresController {
     public async index({ response }) {
         const stores: Store[] | null = await StoresRepository.getAllStores()
 
         if (!stores.length) {
-            return response.notFound({ message: 'Ainda não há lojas cadastradas.' })
+            return response.notFound({ message: messages.store.EMPTY })
         }
 
         return response.ok(stores)
@@ -23,7 +24,7 @@ export default class StoresController {
 
         const store: Store | null = await StoresRepository.findById(id)
         if (!store) {
-            return response.notFound({ message: 'A loja não foi encontrada.' })
+            return response.notFound({ message: messages.store.NOT_FOUND })
         }
 
         return response.ok(store)
