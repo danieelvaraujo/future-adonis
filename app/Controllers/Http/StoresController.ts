@@ -1,6 +1,6 @@
 import BusinessTime from 'App/Models/BusinessTime';
-import BusinessType from 'App/Models/BusinessType';
 import Store from 'App/Models/Store';
+import BusinessTypesRepository from 'App/Repositories/BusinessTypesRepository';
 import StoresRepository from 'App/Repositories/StoresRepository';
 import CreateStoreValidator from 'App/Validators/CreateStoreValidator';
 import UpdateStoreValidator from 'App/Validators/UpdateStoreValidator';
@@ -30,10 +30,8 @@ export default class StoresController {
     }
 
     public async store({ request, response }) {
-        const availableBusinessTypes = await BusinessType
-            .query()    
-            .where('type', request.requestBody.businessType)
-            .first();
+        const availableBusinessTypes = BusinessTypesRepository
+            .availableBusinessTypes(request.requestBody.businessType)
         
         if (!availableBusinessTypes) {
             return response.json({ error: 'O tipo da loja não está dentro dos permitidos.' })
