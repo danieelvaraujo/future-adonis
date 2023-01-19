@@ -10,6 +10,13 @@ test.group('Store list', () => {
     response.assertBodyContains({ message: messages.store.EMPTY })
   })
 
+  test('get a error message if store doesnt exists', async ({ client }) => {
+    const response = await client.get(`/stores/1`)
+
+    response.assertStatus(404)
+    response.assertBodyContains({ message: messages.store.NOT_FOUND })
+  })
+
   test('get a list of stores', async ({ client }) => {
     await StoreFactory.create()
     const response = await client.get('/stores')
