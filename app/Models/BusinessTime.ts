@@ -14,10 +14,10 @@ export default class BusinessTime extends BaseModel {
   public day: Days
 
   @column()
-  public openingHour?: string
+  public openingHour: string
 
   @column()
-  public closingHour?: string  
+  public closingHour: string  
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
