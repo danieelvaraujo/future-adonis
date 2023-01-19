@@ -1,5 +1,6 @@
 import BusinessTime from 'App/Models/BusinessTime';
 import Store from 'App/Models/Store';
+import BusinessTimesRepository from 'App/Repositories/BusinessTimesRepository';
 import BusinessTypesRepository from 'App/Repositories/BusinessTypesRepository';
 import StoresRepository from 'App/Repositories/StoresRepository';
 import CreateStoreValidator from 'App/Validators/CreateStoreValidator';
@@ -41,8 +42,11 @@ export default class StoresController {
             const payload: any = await request.validate(CreateStoreValidator)
             const store: Store = await StoresRepository.createStore(payload, availableBusinessTypes)
         
-            const businessTimePayload = getBusinessTimePayload(request.requestBody, store.id)            
-            await BusinessTime.createMany(businessTimePayload)
+            const businessTimePayload: BusinessTime[] = getBusinessTimePayload(
+                request.requestBody, 
+                store.id
+            )            
+            await BusinessTimesRepository.createMany(businessTimePayload)
             
             return response.ok(store)
         } catch (error) {
