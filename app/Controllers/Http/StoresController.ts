@@ -1,4 +1,6 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import BusinessTime from 'App/Models/BusinessTime';
+import BusinessType from 'App/Models/BusinessType';
 
 import Store from 'App/Models/Store';
 
@@ -21,6 +23,15 @@ export default class StoresController {
     }
 
     public async store({ request, response }) {
+        const availableBusinessTypes = await BusinessType
+            .query()    
+            .where('type', request.requestBody.businessType)
+            .first();
+        
+        if (!availableBusinessTypes) {
+            return response.json({ error: 'O tipo do restaurante não é aceitável.' })
+        }
+
         const storeSchema = schema.create({
             title: schema.string({ trim: true }, [
                 rules.required(),
@@ -28,20 +39,24 @@ export default class StoresController {
             ]),
             document: schema.string({ escape: true }, [
                 rules.maxLength(14)
-            ]),
-            type: schema.string({ escape: true }, [
-                rules.required(),
-            ]),
-            opening_hour: schema.string({ escape: true }, [
-                rules.required(),
-            ]),
-            closing_hour: schema.string({ escape: true }, [
-                rules.required(),
-            ]),
+            ])
         })
 
         const payload: any = await request.validate({ schema: storeSchema })
-        const store: Store = await Store.create(payload)
+        const store: Store = await Store.create({
+            title: payload.title,
+            document: payload.document,
+            businessTypeId: availableBusinessTypes.id
+        })
+        
+        const businessTimesArray = request.requestBody.businessTimes.map(
+            (businessTime: BusinessTime): BusinessTime => {
+                businessTime.storeId = store.id
+
+                return businessTime
+        })
+        
+        await BusinessTime.createMany(businessTimesArray)
 
         return response.ok(store)
     }
@@ -54,8 +69,6 @@ export default class StoresController {
                 rules.maxLength(14),
             ]),
             type: schema.string.optional(),
-            opening_hour: schema.string.optional(),
-            closing_hour: schema.string.optional(),
         })
 
         const payload: any = await request.validate({ schema: storeSchema })
@@ -69,8 +82,6 @@ export default class StoresController {
         store.title = dataToUpdate.title ?? payload.title
         store.document = dataToUpdate.document ?? payload.document
         store.type = dataToUpdate.type ?? payload.type
-        store.opening_hour = dataToUpdate.opening_hour ?? payload.opening_hour
-        store.closing_hour = dataToUpdate.closing_hour ?? payload.closing_hour
 
         await store.save()
 
