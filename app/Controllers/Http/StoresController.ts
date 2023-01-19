@@ -59,7 +59,6 @@ export default class StoresController {
     }
 
     public async update({ request, params, response }) {
-        const dataToUpdate = request.requestBody;
         const storeSchema = schema.create({
             title: schema.string.optional(),
             document: schema.string.optional({ escape: true }, [
@@ -76,9 +75,7 @@ export default class StoresController {
             return response.notFound({ message: 'A loja não foi encontrada.' })
         }
 
-        store.title = dataToUpdate.title ?? payload.title
-        store.document = dataToUpdate.document ?? payload.document
-        store.type = dataToUpdate.type ?? payload.type
+        store.merge(payload);
 
         await store.save()
 
