@@ -4,6 +4,7 @@ import BusinessType from 'App/Models/BusinessType';
 import Days from 'Contracts/Enums/Days'
 
 import Store from 'App/Models/Store';
+import FilterPossibilitiesService from 'App/Services/FilterPossibilitiesService';
 
 export default class StoresController {
     public async index({ response }) {
@@ -116,23 +117,7 @@ export default class StoresController {
         const weekDay = Object.values(Days).slice(0, 7)[dateGMT.getUTCDay()]         
 
         const possibilities = await BusinessTime.query().where({day: weekDay, store_id: storeToCheck.id})
-
-        const filterResults = possibilities.filter((possibility) => {
-            const [openingHours, openingMinutes, openingSeconds] = possibility.openingHour.split(':')
-            const [closingHours, closingMinutes, closingSeconds] = possibility.closingHour.split(':')            
-
-            const possibilityLowerDateLimit = new Date(dateGMT)
-            possibilityLowerDateLimit.setHours(Number(openingHours))
-            possibilityLowerDateLimit.setMinutes(Number(openingMinutes))
-            possibilityLowerDateLimit.setSeconds(Number(openingSeconds))
-
-            const possibilityUpperDateLimit = new Date(dateGMT)            
-            possibilityUpperDateLimit.setHours(Number(closingHours))
-            possibilityUpperDateLimit.setMinutes(Number(closingMinutes))
-            possibilityUpperDateLimit.setSeconds(Number(closingSeconds))
-
-            return possibilityLowerDateLimit <= dateGMT && possibilityUpperDateLimit >= dateGMT
-        })
+        const filterResults = FilterPossibilitiesService.applyFilter(possibilities, dateGMT)
 
         return response.ok({
             isOpen: filterResults.length > 0            
