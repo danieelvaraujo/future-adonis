@@ -1,4 +1,4 @@
-export const getDataGMT = (dateToCheck) => {
+export const getDataGMT = (dateToCheck): Date => {
     const dateGMT = new Date(dateToCheck)
     const requestHours = dateGMT.getHours()
     dateGMT.setHours(requestHours - 3)

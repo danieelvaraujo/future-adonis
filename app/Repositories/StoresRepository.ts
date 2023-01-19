@@ -25,7 +25,7 @@ export default class StoresRepository {
 
     public static async updateStore(id, payload) {
         const store: any = await Store.findOrFail(id)
-        const businessType = await BusinessType.findByOrFail('type', payload.businessType)
+        const businessType: BusinessType = await BusinessType.findByOrFail('type', payload.businessType)
 
         store.title = payload.title ?? store.title
         store.document = payload.document ?? store.document 
@@ -37,7 +37,7 @@ export default class StoresRepository {
     }
 
     public static async destroy(id: Number) {
-        const store: any = await Store.find(id)
+        const store: Store | null = await Store.find(id)
         if (!store) {
             return 'A loja não foi encontrada.'
         }
