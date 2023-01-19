@@ -6,10 +6,11 @@ import Days from 'Contracts/Enums/Days'
 import Store from 'App/Models/Store';
 import FilterPossibilitiesService from 'App/Services/FilterPossibilitiesService';
 import { getDataGMT } from './Helpers/getDataGMT';
+import StoresRepository from 'App/Repositories/StoresRepository';
 
 export default class StoresController {
     public async index({ response }) {
-        const stores = await Store.all()
+        const stores = await StoresRepository.getAllStores()
 
         return response.ok(stores)
     }
@@ -110,7 +111,7 @@ export default class StoresController {
         if (!storeToCheck) {
             return response.notFound({ message: "A não foi encontrada"});
         }
-        
+
         const dateToCheck = request.requestData.data
         const dateGMT = getDataGMT(dateToCheck)
         
