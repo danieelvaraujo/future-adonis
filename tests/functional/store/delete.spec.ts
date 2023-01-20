@@ -10,8 +10,8 @@ test.group('Store delete', () => {
   })
 
   test('get a success message when deleting existing store', async ({ client }) => {
-    await StoreFactory.create()
-    const response = await client.delete(`/stores/1`)
+    const store = await StoreFactory.create()
+    const response = await client.delete(`/stores/${store.id}`)
 
     response.assertStatus(200)    
   })
