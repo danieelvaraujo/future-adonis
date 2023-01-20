@@ -5,7 +5,7 @@ Simples API Rest para CRUD de restaurantes e seus respectivos horários de funci
 ## OBJETIVOS
 
 - CRUD básico como nome, documento, tipo (lanchonete, sorveteria, ...) e etc ✅
-- Enviar a URL do swagger do sistema publicado em algum servidor e o link para o repositório.
+- Enviar a URL do swagger do sistema publicado em algum servidor e o link para o repositório ✅.
 - Utilizar NodeJS e Express -> Utilizado Adonis. ✅
 - Pode ser usado qualquer banco de dados relacional moderno (Oracle, SQLServer, MySQL ✅, Postgree...)
 
@@ -18,7 +18,7 @@ Simples API Rest para CRUD de restaurantes e seus respectivos horários de funci
 - Endpoint “IsOpen”: Deve receber um DateTime como parâmetro e responder com true (está aberto) ou false (está fechado) ✅
 
 ## DIFERENCIAIS
-Apresentar o deploy na AWS representa uma forte vantagem!
+Apresentar o deploy na AWS representa uma forte vantagem! ✅
 
 ## PRAZO
 O projeto precisa ser entregue em até 48 horas, porém, você levará vantagem se entregar antes. 
