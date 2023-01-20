@@ -43,7 +43,7 @@ export default class StoresController {
             
             return response.ok(store)
         } catch (error) {            
-            response.badRequest(error)
+            response.badRequest({ message: `${messages.store.ERROR}${error}`})
         }
     }
 
@@ -56,7 +56,7 @@ export default class StoresController {
             
             return response.ok(store)
         } catch (error) {
-            response.badRequest(error)
+            response.badRequest({ message: `${messages.store.ERROR}${error}`})
         }
     }
 
