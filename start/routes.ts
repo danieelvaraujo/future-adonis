@@ -22,3 +22,7 @@ import Route from '@ioc:Adonis/Core/Route'
 
 Route.get('/stores/is_open', 'IsOpenController.isOpen')
 Route.resource('stores', 'StoresController').apiOnly()
+
+Route.get('/', ({ view }) => {
+    return view.render('swagger')
+})
